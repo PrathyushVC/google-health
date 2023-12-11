@@ -12,6 +12,7 @@ import sklearn.metrics
 
 def _binarize(x, variable_name='values'):
   """Casts a boolean vector to {0, 1} and validates its values."""
+
   binarized = np.array(x, dtype=np.int32)
   if set(binarized) - set([0, 1]):
     raise ValueError('%s must be in {0, 1}' % variable_name)
