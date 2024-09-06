@@ -373,3 +373,25 @@ def average_roc_curves(y_true,
   mean_tpr = np.append(0, np.append(mean_tpr[valid_range], 1))
 
   return mean_fpr, mean_tpr
+
+def summary_stats(labels,roc_set_1,roc_set_2):
+    """
+    Compute summary statistics using DeLong test for multiple columns of ROC scores.
+
+    Parameters:
+    - labels (array-like): True labels used in the DeLong test.
+    - roc_set_1 (DataFrame or array-like): First set of ROC (Receiver Operating Characteristic) scores.
+    - roc_set_2 (DataFrame or array-like): Second set of ROC scores.
+
+    Returns:
+    - effects (list): List of effect sizes for each column.
+    - cis (list): List of confidence intervals for each column.
+    - p_values (list): List of p-values for each column.
+    """
+    effects,cis,p_values=[],[],[]
+    for i in range(2,len(roc_set_1)):
+        delong_test_results=roc.delong_test(y_true=labels,y_score_1=roc_set_1.iloc[:,i].to_numpy(),y_score_2=roc_set_2.iloc[:,i].to_numpy())
+        effects.append(delong_test_results.effect)
+        cis.append(delong_test_results.ci)
+        p_values.append(delong_test_results.pvalue)
+    return effects,cis,p_values
